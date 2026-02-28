@@ -17,6 +17,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    //should not be exposed
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);

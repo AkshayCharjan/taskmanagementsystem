@@ -21,11 +21,12 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public void createTask(Task task){
+    public Task createTask(Task task){
         taskRepository.save(task);
+        return task;
     }
 
-    public void updateTask(Task updatedTask, UUID taskId){
+    public Task updateTask(Task updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
         if(updatedTask.getPriority() != null)
@@ -35,6 +36,7 @@ public class TaskService {
         if(updatedTask.getAssignedTo() != null)
             task.setAssignedTo(updatedTask.getAssignedTo());
         taskRepository.save(task);
+        return task;
     }
 
     public void deleteTask(UUID taskId){
@@ -54,12 +56,13 @@ public class TaskService {
         else return taskRepository.findAll();
     }
 
-    public void assignTask(UUID taskId, UUID userID){
+    public Task assignTask(UUID taskId, UUID userID){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
         User user = userRepository.findById(userID)
                         .orElseThrow(() -> new RuntimeException("User not found"));
         task.setAssignedTo(user);
         taskRepository.save(task);
+        return task;
     }
 }

@@ -19,13 +19,13 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public void createTask(@RequestBody Task task){
-        taskService.createTask(task);
+    public Task createTask(@RequestBody Task task){
+        return taskService.createTask(task);
     }
 
     @PutMapping("/{taskId}")
-    public void updateTask(@RequestBody Task updatedtask, @PathVariable UUID taskId){
-        taskService.updateTask(updatedtask, taskId);
+    public Task updateTask(@RequestBody Task updatedtask, @PathVariable UUID taskId){
+        return taskService.updateTask(updatedtask, taskId);
     }
 
     @GetMapping
@@ -41,9 +41,9 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}/user/{userId}")
-    public void assignTask(@PathVariable UUID taskId,
+    public Task assignTask(@PathVariable UUID taskId,
                            @PathVariable UUID userId){
-        taskService.assignTask(taskId,userId);
+        return taskService.assignTask(taskId,userId);
     }
 
 }
