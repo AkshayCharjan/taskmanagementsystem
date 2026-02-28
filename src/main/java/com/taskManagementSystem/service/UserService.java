@@ -17,7 +17,6 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        user.setId(UUID.randomUUID());
         return userRepository.save(user);
     }
 

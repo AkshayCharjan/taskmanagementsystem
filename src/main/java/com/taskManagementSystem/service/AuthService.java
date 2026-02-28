@@ -1,8 +1,10 @@
 package com.taskManagementSystem.service;
 
-import com.taskManagementSystem.auth.JwtUtil;
+import com.taskManagementSystem.security.JwtUtil;
+import com.taskManagementSystem.dto.AuthResponse;
 import com.taskManagementSystem.dto.LoginRequest;
 import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,17 +22,18 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(User user){
+    public AuthResponse register(User user){
         if(userRepository.existsByEmail(user.getEmail())){
             throw new RuntimeException("User already exists");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail());
+        return new AuthResponse(token);
     }
 
-    public String login(LoginRequest loginRequest){
+    public AuthResponse login(LoginRequest loginRequest){
         String userEmail = loginRequest.getEmail();
         String password = loginRequest.getPassword();
 
@@ -41,8 +44,9 @@ public class AuthService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new RuntimeException("Invalid password");
+            throw new BadRequestException("Invalid password");
         }
-        return jwtUtil.generateToken(userEmail);
+        String token = jwtUtil.generateToken(userEmail);
+        return new AuthResponse(token);
     }
 }

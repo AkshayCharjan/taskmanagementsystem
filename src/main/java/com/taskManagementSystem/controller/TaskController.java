@@ -1,9 +1,11 @@
 package com.taskManagementSystem.controller;
 
+import com.taskManagementSystem.dto.TaskRequest;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.service.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +20,14 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PostMapping("/create")
-    public Task createTask(@RequestBody Task task){
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Task createTask(@RequestBody TaskRequest task){
         return taskService.createTask(task);
     }
 
     @PutMapping("/{taskId}")
-    public Task updateTask(@RequestBody Task updatedtask, @PathVariable UUID taskId){
+    public Task updateTask(@RequestBody TaskRequest updatedtask, @PathVariable UUID taskId){
         return taskService.updateTask(updatedtask, taskId);
     }
 

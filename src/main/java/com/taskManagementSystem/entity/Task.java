@@ -21,8 +21,11 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
     @Enumerated(EnumType.STRING)
     private Priority priority;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
 }

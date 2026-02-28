@@ -1,5 +1,6 @@
 package com.taskManagementSystem.service;
 
+import com.taskManagementSystem.dto.TaskRequest;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
@@ -22,19 +23,34 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public Task createTask(Task task){
+    public Task createTask(TaskRequest taskRequest){
+        Task task = new Task();
+        task.setStatus(taskRequest.getStatus());
+        task.setPriority(taskRequest.getPriority());
+        if(taskRequest.getAssignedTo() != null) {
+            User user = userRepository.findById(taskRequest.getAssignedTo())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            task.setAssignedTo(user);
+        }
         taskRepository.save(task);
         return task;
     }
 
-    public Task updateTask(Task updatedTask, UUID taskId){
+    public Task updateTask(TaskRequest updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));        if(updatedTask.getPriority() != null)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if(updatedTask.getPriority() != null)
             task.setPriority(updatedTask.getPriority());
+
         if(updatedTask.getStatus() != null)
             task.setStatus(updatedTask.getStatus());
-        if(updatedTask.getAssignedTo() != null)
-            task.setAssignedTo(updatedTask.getAssignedTo());
+
+        if(updatedTask.getAssignedTo() != null){
+            User user = userRepository.findById(updatedTask.getAssignedTo())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            task.setAssignedTo(user);
+        }
         taskRepository.save(task);
         return task;
     }

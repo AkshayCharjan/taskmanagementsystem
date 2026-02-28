@@ -1,6 +1,7 @@
 package com.taskManagementSystem.controller;
 
 
+import com.taskManagementSystem.dto.AuthResponse;
 import com.taskManagementSystem.dto.LoginRequest;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.service.AuthService;
@@ -16,12 +17,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user){
+    public AuthResponse register(@RequestBody User user){
         return authService.register(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest){
+    public AuthResponse login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
 }

@@ -1,4 +1,4 @@
-package com.taskManagementSystem.auth;
+package com.taskManagementSystem.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

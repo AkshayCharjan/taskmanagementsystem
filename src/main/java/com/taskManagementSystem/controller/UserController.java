@@ -17,11 +17,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    //should not be exposed
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
+    //Admin only and should not be exposed: Created for testing purposes
+//    @PostMapping
+//    public User createUser(@RequestBody User user) {
+//        return userService.createUser(user);
+//    }
 
     @GetMapping
     public List<User> getUsers() {
@@ -32,9 +32,9 @@ public class UserController {
     public User getUser(@PathVariable UUID userId) {
         return userService.getUserById(userId);
     }
-
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable UUID userId) {
-        userService.deleteUser(userId);
-    }
+//Admin only
+//    @DeleteMapping("/{userId}")
+//    public void deleteUser(@PathVariable UUID userId) {
+//        userService.deleteUser(userId);
+//    }
 }
