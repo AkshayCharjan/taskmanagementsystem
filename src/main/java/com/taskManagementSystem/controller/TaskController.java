@@ -40,4 +40,10 @@ public class TaskController {
         taskService.deleteTask(taskId);
     }
 
+    @PatchMapping("/{taskId}/user/{userId}")
+    public void assignTask(@PathVariable UUID taskId,
+                           @PathVariable UUID userId){
+        taskService.assignTask(taskId,userId);
+    }
+
 }
