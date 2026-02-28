@@ -15,15 +15,9 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> {
 
-    List<Task> findByStatusAndPriority(Status status, Priority priority);
-
     Page<Task> findByStatusAndPriority(Status status, Priority priority, Pageable pageable);
 
-    List<Task> findByStatus(Status status);
-
     Page<Task> findByStatus(Status status, Pageable pageable);
-
-    List<Task> findByPriority(Priority priority);
 
     Page<Task> findByPriority(Priority priority, Pageable pageable);
 
