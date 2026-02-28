@@ -25,17 +25,20 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void updateTask(Task updatedTask){
-        Task task = taskRepository.findById(updatedTask.getId())
+    public void updateTask(Task updatedTask, UUID taskId){
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
-        task.setPriority(updatedTask.getPriority());
-        task.setStatus(updatedTask.getStatus());
-        task.setAssignedTo(updatedTask.getAssignedTo());
+        if(updatedTask.getPriority() != null)
+            task.setPriority(updatedTask.getPriority());
+        if(updatedTask.getStatus() != null)
+            task.setStatus(updatedTask.getStatus());
+        if(updatedTask.getAssignedTo() != null)
+            task.setAssignedTo(updatedTask.getAssignedTo());
         taskRepository.save(task);
     }
 
-    public void deleteTask(Task task){
-        taskRepository.delete(task);
+    public void deleteTask(UUID taskId){
+        taskRepository.deleteById(taskId);
     }
 
     public List<Task> getFilteredTasks(Status status, Priority priority){
