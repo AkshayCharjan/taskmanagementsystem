@@ -1,6 +1,7 @@
 package com.taskManagementSystem.service;
 
 import com.taskManagementSystem.auth.JwtUtil;
+import com.taskManagementSystem.dto.LoginRequest;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,10 @@ public class AuthService {
         return jwtUtil.generateToken(user.getEmail());
     }
 
-    public String login(String userEmail, String password){
+    public String login(LoginRequest loginRequest){
+        String userEmail = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
         if(!userRepository.existsByEmail(userEmail)){
             throw new RuntimeException("User does not exists");
         }
