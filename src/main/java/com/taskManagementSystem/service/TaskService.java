@@ -8,6 +8,8 @@ import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,17 +61,17 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
 
-    public List<Task> getFilteredTasks(Status status, Priority priority){
+    public Page<Task> getFilteredTasks(Status status, Priority priority, Pageable pageable){
         if(status != null && priority != null){
-            return taskRepository.findByStatusAndPriority(status, priority);
+            return taskRepository.findByStatusAndPriority(status, priority, pageable);
         }
         else if(status != null) {
-            return taskRepository.findByStatus(status);
+            return taskRepository.findByStatus(status, pageable);
         }
         else if(priority != null) {
-            return taskRepository.findByPriority(priority);
+            return taskRepository.findByPriority(priority, pageable);
         }
-        else return taskRepository.findAll();
+        else return taskRepository.findAll(pageable);
     }
 
     public Task assignTask(UUID taskId, UUID userID){
