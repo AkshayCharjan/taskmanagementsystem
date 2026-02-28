@@ -1,7 +1,7 @@
 package com.taskManagementSystem.controller;
 
 import com.taskManagementSystem.entity.User;
-import com.taskManagementSystem.repository.UserRepository;
+import com.taskManagementSystem.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,20 +11,29 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        user.setId(UUID.randomUUID());
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
     @GetMapping
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUser(@PathVariable UUID userId) {
+        return userService.getUserById(userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable UUID userId) {
+        userService.deleteUser(userId);
     }
 }
