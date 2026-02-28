@@ -1,6 +1,7 @@
 package com.taskManagementSystem.controller;
 
 import com.taskManagementSystem.dto.TaskRequest;
+import com.taskManagementSystem.dto.TaskResponse;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
@@ -11,7 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,7 +35,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public Page<Task> getFilteredTasks(
+    public Page<TaskResponse> getFilteredTasks(
             @RequestParam(required = false) Status status,
             @RequestParam(required = false) Priority priority,
             @PageableDefault(size = 10, sort = "priority") Pageable pageable){

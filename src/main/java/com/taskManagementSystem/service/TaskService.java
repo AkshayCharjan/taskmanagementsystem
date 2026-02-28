@@ -1,6 +1,8 @@
 package com.taskManagementSystem.service;
 
 import com.taskManagementSystem.dto.TaskRequest;
+import com.taskManagementSystem.dto.TaskResponse;
+import com.taskManagementSystem.dto.UserResponse;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
@@ -61,17 +63,20 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
 
-    public Page<Task> getFilteredTasks(Status status, Priority priority, Pageable pageable){
+    public Page<TaskResponse> getFilteredTasks(Status status, Priority priority, Pageable pageable){
+        Page<Task> tasks;
         if(status != null && priority != null){
-            return taskRepository.findByStatusAndPriority(status, priority, pageable);
+            tasks =  taskRepository.findByStatusAndPriority(status, priority, pageable);
         }
         else if(status != null) {
-            return taskRepository.findByStatus(status, pageable);
+            tasks =  taskRepository.findByStatus(status, pageable);
         }
         else if(priority != null) {
-            return taskRepository.findByPriority(priority, pageable);
+            tasks =  taskRepository.findByPriority(priority, pageable);
         }
-        else return taskRepository.findAll(pageable);
+        else
+            tasks =  taskRepository.findAll(pageable);
+        return tasks.map(this::toTaskResponse);
     }
 
     public Task assignTask(UUID taskId, UUID userID){
@@ -82,5 +87,22 @@ public class TaskService {
         task.setAssignedTo(user);
         taskRepository.save(task);
         return task;
+    }
+
+    private TaskResponse toTaskResponse(Task task){
+        TaskResponse taskResponse = new TaskResponse();
+        taskResponse.setId(task.getId());
+        taskResponse.setPriority(task.getPriority());
+        taskResponse.setStatus(task.getStatus());
+
+        User assignedUser = task.getAssignedTo();
+        UserResponse userResponse = new UserResponse();
+        if(assignedUser != null){
+            userResponse.setId(assignedUser.getId());
+            userResponse.setName(assignedUser.getName());
+            userResponse.setEmail(assignedUser.getEmail());
+        }
+        taskResponse.setAssignedTo(userResponse);
+        return taskResponse;
     }
 }
