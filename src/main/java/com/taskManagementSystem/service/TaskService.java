@@ -4,6 +4,7 @@ import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
+import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,7 @@ public class TaskService {
 
     public Task updateTask(Task updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-        if(updatedTask.getPriority() != null)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));        if(updatedTask.getPriority() != null)
             task.setPriority(updatedTask.getPriority());
         if(updatedTask.getStatus() != null)
             task.setStatus(updatedTask.getStatus());
@@ -58,9 +58,9 @@ public class TaskService {
 
     public Task assignTask(UUID taskId, UUID userID){
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         User user = userRepository.findById(userID)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         task.setAssignedTo(user);
         taskRepository.save(task);
         return task;

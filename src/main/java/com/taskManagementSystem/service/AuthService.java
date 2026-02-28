@@ -3,6 +3,7 @@ package com.taskManagementSystem.service;
 import com.taskManagementSystem.auth.JwtUtil;
 import com.taskManagementSystem.dto.LoginRequest;
 import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,11 @@ public class AuthService {
         String password = loginRequest.getPassword();
 
         if(!userRepository.existsByEmail(userEmail)){
-            throw new RuntimeException("User does not exists");
+            throw new ResourceNotFoundException("User does not exists");
         }
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw new RuntimeException("Invalid password");
         }
