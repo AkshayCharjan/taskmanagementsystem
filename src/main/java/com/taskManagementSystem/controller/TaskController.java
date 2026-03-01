@@ -5,6 +5,7 @@ import com.taskManagementSystem.dto.TaskResponse;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,12 +25,12 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse createTask(@RequestBody TaskRequest task){
+    public TaskResponse createTask(@Valid @RequestBody TaskRequest task){
         return taskService.createTask(task);
     }
 
     @PutMapping("/{taskId}")
-    public TaskResponse updateTask(@RequestBody TaskRequest updatedtask, @PathVariable UUID taskId){
+    public TaskResponse updateTask(@Valid @RequestBody TaskRequest updatedtask, @PathVariable UUID taskId){
         return taskService.updateTask(updatedtask, taskId);
     }
 
