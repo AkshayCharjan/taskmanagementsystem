@@ -44,15 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(jwtUtil.validateToken(token)) {
 
             String email = jwtUtil.extractEmail(token);
-            
-            // Load user from database to get their role
             User user = userRepository.findByEmail(email).orElse(null);
             
             if(user != null) {
-                // Get role from database (e.g., ADMIN or USER)
                 String role = user.getRole().name();
-                
-                // Create authorities with ROLE_ prefix (Spring Security requirement)
+
                 List<SimpleGrantedAuthority> authorities = 
                     List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
@@ -66,7 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }
