@@ -11,6 +11,7 @@ import com.taskManagementSystem.repository.ProjectRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,12 @@ public class ProjectService {
     @PreAuthorize("hasRole('ADMIN')")
     public ProjectResponse createProject(ProjectRequest request) {
 
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
         if (request.getName() == null || request.getName().trim().isEmpty()) {
             log.error("Project name is required");
             throw new BadRequestException("Project name is required");
@@ -43,14 +50,13 @@ public class ProjectService {
         project.setName(request.getName());
         project.setDescription(request.getDescription());
 
-        if(request.getCreatedByUserId() != null) {
-            User user = userRepository.findById(request.getCreatedByUserId())
-                    .orElseThrow(() -> {
-                        log.error("User not found id={}", request.getCreatedByUserId());
-                        return new ResourceNotFoundException("User not found");
-                    });
-            project.setCreatedBy(user);
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("User not found email={}", email);
+                    return new ResourceNotFoundException("User not found");
+                });
+        project.setCreatedBy(user);
+
 
         projectRepository.save(project);
 

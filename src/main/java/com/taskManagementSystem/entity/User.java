@@ -26,5 +26,5 @@ public class User {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.USER;  // Default role
+    private Role role = Role.USER;
 }
