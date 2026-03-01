@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @Getter
@@ -25,4 +26,7 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    @Version
+    private Long version;
 }
