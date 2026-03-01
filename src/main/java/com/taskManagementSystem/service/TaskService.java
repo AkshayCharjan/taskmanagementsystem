@@ -13,6 +13,7 @@ import com.taskManagementSystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Task createTask(TaskRequest taskRequest){
         Task task = new Task();
         task.setStatus(taskRequest.getStatus());
@@ -45,7 +47,7 @@ public class TaskService {
         log.info("Task created successfully id={}", task.getId());
         return task;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public Task updateTask(TaskRequest updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> {
@@ -72,11 +74,13 @@ public class TaskService {
         return task;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTask(UUID taskId){
         taskRepository.deleteById(taskId);
         log.info("Task deleted successfully id={}", taskId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public Page<TaskResponse> getFilteredTasks(Status status, Priority priority, Pageable pageable){
         Page<Task> tasks;
@@ -94,6 +98,7 @@ public class TaskService {
         return tasks.map(this::toTaskResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public TaskResponse assignTask(UUID taskId, UUID userID){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> {

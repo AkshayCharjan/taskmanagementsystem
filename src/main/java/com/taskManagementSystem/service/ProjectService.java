@@ -10,6 +10,7 @@ import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.ProjectRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class ProjectService {
         this.userRepository = userRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ProjectResponse createProject(ProjectRequest request) {
 
         if (request.getName() == null || request.getName().trim().isEmpty()) {
@@ -57,6 +59,7 @@ public class ProjectService {
         return toProjectResponse(project);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<ProjectResponse> getAllProjects() {
 
@@ -66,6 +69,7 @@ public class ProjectService {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public ProjectResponse getProject(UUID projectId) {
 
@@ -78,6 +82,7 @@ public class ProjectService {
         return toProjectResponse(project);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteProject(UUID projectId) {
 
         if (!projectRepository.existsById(projectId)) {
