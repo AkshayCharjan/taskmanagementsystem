@@ -3,7 +3,9 @@ package com.taskManagementSystem.service;
 import com.taskManagementSystem.security.JwtUtil;
 import com.taskManagementSystem.dto.AuthResponse;
 import com.taskManagementSystem.dto.LoginRequest;
+import com.taskManagementSystem.dto.RegisterRequest;
 import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.enums.Role;
 import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.UserRepository;
@@ -24,28 +26,34 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public AuthResponse register(User user){
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+    public AuthResponse register(RegisterRequest request){
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
             log.error("Email is required");
             throw new BadRequestException("Email is required");
         }
 
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+        if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
             log.error("Password is required");
             throw new BadRequestException("Password is required");
         }
 
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
             log.error("Name is required");
             throw new BadRequestException("Name is required");
         }
 
-        if(userRepository.existsByEmail(user.getEmail())){
-            log.error("User already exists with email={}", user.getEmail());
+        if(userRepository.existsByEmail(request.getEmail())){
+            log.error("User already exists with email={}", request.getEmail());
             throw new BadRequestException("User already exists with this email");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        
+        user.setRole(Role.USER);
+
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getEmail());
         log.info("User registered successfully with email={}", user.getEmail());

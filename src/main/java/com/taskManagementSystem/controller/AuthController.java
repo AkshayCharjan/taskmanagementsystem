@@ -3,7 +3,7 @@ package com.taskManagementSystem.controller;
 
 import com.taskManagementSystem.dto.AuthResponse;
 import com.taskManagementSystem.dto.LoginRequest;
-import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.dto.RegisterRequest;
 import com.taskManagementSystem.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +17,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody User user){
-        return authService.register(user);
+    public AuthResponse register(@RequestBody RegisterRequest request){
+        return authService.register(request);
     }
 
     @PostMapping("/login")
