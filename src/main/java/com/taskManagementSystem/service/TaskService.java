@@ -10,6 +10,7 @@ import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -34,16 +36,23 @@ public class TaskService {
         task.setPriority(taskRequest.getPriority());
         if(taskRequest.getAssignedTo() != null) {
             User user = userRepository.findById(taskRequest.getAssignedTo())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                    .orElseThrow(() -> {
+                        log.error("User not found id={}", taskRequest.getAssignedTo());
+                        return new ResourceNotFoundException("User not found");
+                    });
             task.setAssignedTo(user);
         }
         taskRepository.save(task);
+        log.info("Task created successfully id={}", task.getId());
         return task;
     }
 
     public Task updateTask(TaskRequest updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+                .orElseThrow(() -> {
+                    log.error("Task not found id={}", taskId);
+                    return new ResourceNotFoundException("Task not found");
+                });
 
         if(updatedTask.getPriority() != null)
             task.setPriority(updatedTask.getPriority());
@@ -53,15 +62,20 @@ public class TaskService {
 
         if(updatedTask.getAssignedTo() != null){
             User user = userRepository.findById(updatedTask.getAssignedTo())
-                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                        .orElseThrow(() -> {
+                            log.error("User not found id={}", updatedTask.getAssignedTo());
+                            return new ResourceNotFoundException("User not found");
+                        });
             task.setAssignedTo(user);
         }
         taskRepository.save(task);
+        log.info("Task updated successfully id={}", taskId);
         return task;
     }
 
     public void deleteTask(UUID taskId){
         taskRepository.deleteById(taskId);
+        log.info("Task deleted successfully id={}", taskId);
     }
 
     @Transactional(readOnly = true)
@@ -83,11 +97,18 @@ public class TaskService {
 
     public Task assignTask(UUID taskId, UUID userID){
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+                .orElseThrow(() -> {
+                    log.error("Task not found id={}", taskId);
+                    return new ResourceNotFoundException("Task not found");
+                });
         User user = userRepository.findById(userID)
-                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                        .orElseThrow(() -> {
+                            log.error("User not found id={}", userID);
+                            return new ResourceNotFoundException("User not found");
+                        });
         task.setAssignedTo(user);
         taskRepository.save(task);
+        log.info("Task assigned successfully id={}, userId={}", taskId, userID);
         return task;
     }
 

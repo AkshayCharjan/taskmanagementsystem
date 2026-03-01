@@ -2,12 +2,14 @@ package com.taskManagementSystem.service;
 
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -18,7 +20,9 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        log.info("User created successfully id={}", savedUser.getId());
+        return savedUser;
     }
 
     @Transactional(readOnly = true)
@@ -29,10 +33,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getUserById(UUID userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User not found id={}", userId);
+                    return new RuntimeException("User not found");
+                });
     }
 
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
+        log.info("User deleted successfully id={}", userId);
     }
 }

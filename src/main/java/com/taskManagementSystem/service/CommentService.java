@@ -10,12 +10,14 @@ import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.CommentRepository;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class CommentService {
 
@@ -36,10 +38,16 @@ public class CommentService {
                                          CommentRequest request) {
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+                .orElseThrow(() -> {
+                    log.error("Task not found id={}", taskId);
+                    return new ResourceNotFoundException("Task not found");
+                });
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User not found id={}", userId);
+                    return new ResourceNotFoundException("User not found");
+                });
 
         Comment comment = new Comment();
         comment.setContent(request.getContent());
@@ -48,6 +56,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
+        log.info("Comment created successfully id={}", comment.getId());
         return toCommentResponse(comment);
     }
 
@@ -67,10 +76,13 @@ public class CommentService {
     public void deleteComment(UUID commentId) {
 
         if (!commentRepository.existsById(commentId)) {
+            log.error("Comment not found id={}", commentId);
             throw new ResourceNotFoundException("Comment not found");
         }
 
         commentRepository.deleteById(commentId);
+
+        log.info("Comment deleted successfully id={}", commentId);
     }
 
     private CommentResponse toCommentResponse(Comment comment) {
