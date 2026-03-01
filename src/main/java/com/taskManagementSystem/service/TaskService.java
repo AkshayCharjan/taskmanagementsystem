@@ -58,8 +58,10 @@ public class TaskService {
         if(updatedTask.getPriority() != null)
             task.setPriority(updatedTask.getPriority());
 
-        if(updatedTask.getStatus() != null)
+        if(updatedTask.getStatus() != null) {
+            validateStatusTransition(task.getStatus(), updatedTask.getStatus());
             task.setStatus(updatedTask.getStatus());
+        }
 
         if(updatedTask.getAssignedTo() != null){
             User user = userRepository.findById(updatedTask.getAssignedTo())
@@ -114,6 +116,36 @@ public class TaskService {
         taskRepository.save(task);
         log.info("Task assigned successfully id={}, userId={}", taskId, userID);
         return toTaskResponse(task);
+    }
+
+    private void validateStatusTransition(Status current, Status next) {
+        if (current == next) return;
+
+        switch (current) {
+            case OPEN:
+                if (next != Status.IN_PROGRESS && next != Status.CLOSED) {
+                    log.error("Invalid status transition: {} -> {}", current, next);
+                    throw new IllegalStateException(
+                        "OPEN can only transition to IN_PROGRESS or CLOSED"
+                    );
+                }
+                break;
+
+            case IN_PROGRESS:
+                if (next != Status.CLOSED) {
+                    log.error("Invalid status transition: {} -> {}", current, next);
+                    throw new IllegalStateException(
+                        "IN_PROGRESS can only transition to CLOSED"
+                    );
+                }
+                break;
+
+            case CLOSED:
+                log.error("Invalid status transition: {} -> {}", current, next);
+                throw new IllegalStateException(
+                    "CLOSED tasks cannot be reopened"
+                );
+        }
     }
 
     private TaskResponse toTaskResponse(Task task){
