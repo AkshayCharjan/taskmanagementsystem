@@ -7,7 +7,6 @@ import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
-import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -96,7 +94,7 @@ public class TaskService {
         return tasks.map(this::toTaskResponse);
     }
 
-    public Task assignTask(UUID taskId, UUID userID){
+    public TaskResponse assignTask(UUID taskId, UUID userID){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> {
                     log.error("Task not found id={}", taskId);
@@ -110,7 +108,7 @@ public class TaskService {
         task.setAssignedTo(user);
         taskRepository.save(task);
         log.info("Task assigned successfully id={}, userId={}", taskId, userID);
-        return task;
+        return toTaskResponse(task);
     }
 
     private TaskResponse toTaskResponse(Task task){
