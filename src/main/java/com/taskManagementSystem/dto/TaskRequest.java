@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TaskRequest {
+    private String title;
     private Status status;
     private Priority priority;
     private UUID assignedTo;

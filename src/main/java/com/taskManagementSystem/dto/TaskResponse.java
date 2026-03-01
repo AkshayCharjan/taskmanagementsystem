@@ -11,6 +11,7 @@ import java.util.UUID;
 @Setter
 public class TaskResponse {
     private UUID id;
+    private String title;
     private Status status;
     private Priority priority;
     private UserResponse assignedTo;

@@ -37,6 +37,7 @@ public class TaskService {
     @PreAuthorize("hasRole('ADMIN')")
     public TaskResponse createTask(TaskRequest taskRequest){
         Task task = new Task();
+        task.setTitle(taskRequest.getTitle());
         task.setStatus(taskRequest.getStatus());
         task.setPriority(taskRequest.getPriority());
         if(taskRequest.getAssignedTo() != null) {
@@ -68,6 +69,9 @@ public class TaskService {
                     log.error("Task not found id={}", taskId);
                     return new ResourceNotFoundException("Task not found");
                 });
+
+        if(updatedTask.getTitle() != null)
+            task.setTitle(updatedTask.getTitle());
 
         if(updatedTask.getPriority() != null)
             task.setPriority(updatedTask.getPriority());
@@ -175,6 +179,7 @@ public class TaskService {
     private TaskResponse toTaskResponse(Task task){
         TaskResponse taskResponse = new TaskResponse();
         taskResponse.setId(task.getId());
+        taskResponse.setTitle(task.getTitle());
         taskResponse.setPriority(task.getPriority());
         taskResponse.setStatus(task.getStatus());
 

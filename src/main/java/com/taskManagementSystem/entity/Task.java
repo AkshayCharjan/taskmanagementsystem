@@ -19,6 +19,9 @@ public class Task {
     @UuidGenerator
     private UUID id;
 
+    @Column(nullable = false)
+    private String title;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
