@@ -5,6 +5,7 @@ import com.taskManagementSystem.dto.ProjectResponse;
 import com.taskManagementSystem.dto.UserResponse;
 import com.taskManagementSystem.entity.Project;
 import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.ProjectRepository;
 import com.taskManagementSystem.repository.UserRepository;
@@ -30,6 +31,12 @@ public class ProjectService {
 
     public ProjectResponse createProject(ProjectRequest request) {
 
+        log.info("Creating project name={}", request.getName());
+
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            log.error("Project name is required");
+            throw new BadRequestException("Project name is required");
+        }
 
         User user = userRepository.findById(request.getCreatedByUserId())
                 .orElseThrow(() -> {

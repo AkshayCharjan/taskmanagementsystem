@@ -7,6 +7,7 @@ import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
+import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;

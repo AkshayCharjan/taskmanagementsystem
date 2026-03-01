@@ -6,6 +6,7 @@ import com.taskManagementSystem.dto.UserResponse;
 import com.taskManagementSystem.entity.Comment;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.exception.BadRequestException;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.CommentRepository;
 import com.taskManagementSystem.repository.TaskRepository;
@@ -36,6 +37,23 @@ public class CommentService {
     public CommentResponse createComment(UUID taskId,
                                          UUID userId,
                                          CommentRequest request) {
+
+        log.info("Creating comment for taskId={} by userId={}", taskId, userId);
+
+        if (taskId == null) {
+            log.error("TaskId is required");
+            throw new BadRequestException("TaskId is required");
+        }
+
+        if (userId == null) {
+            log.error("UserId is required");
+            throw new BadRequestException("UserId is required");
+        }
+
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            log.error("Comment content is required");
+            throw new BadRequestException("Comment content is required");
+        }
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> {
