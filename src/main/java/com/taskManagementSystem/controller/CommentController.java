@@ -20,10 +20,9 @@ public class CommentController {
     @PostMapping("/tasks/{taskId}/comments")
     public CommentResponse createComment(
             @PathVariable UUID taskId,
-            @RequestParam UUID userId,
             @RequestBody CommentRequest request) {
 
-        return commentService.createComment(taskId, userId, request);
+        return commentService.createComment(taskId, request);
     }
 
     @GetMapping("/tasks/{taskId}/comments")

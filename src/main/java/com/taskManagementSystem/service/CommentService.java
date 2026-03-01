@@ -12,6 +12,7 @@ import com.taskManagementSystem.repository.CommentRepository;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,19 +36,16 @@ public class CommentService {
     }
 
     public CommentResponse createComment(UUID taskId,
-                                         UUID userId,
                                          CommentRequest request) {
 
-        log.info("Creating comment for taskId={} by userId={}", taskId, userId);
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
         if (taskId == null) {
             log.error("TaskId is required");
             throw new BadRequestException("TaskId is required");
-        }
-
-        if (userId == null) {
-            log.error("UserId is required");
-            throw new BadRequestException("UserId is required");
         }
 
         if (request.getContent() == null || request.getContent().trim().isEmpty()) {
@@ -61,9 +59,9 @@ public class CommentService {
                     return new ResourceNotFoundException("Task not found");
                 });
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found id={}", userId);
+                    log.error("User not found email={}", email);
                     return new ResourceNotFoundException("User not found");
                 });
 
