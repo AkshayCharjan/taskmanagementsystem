@@ -28,4 +28,8 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 }
