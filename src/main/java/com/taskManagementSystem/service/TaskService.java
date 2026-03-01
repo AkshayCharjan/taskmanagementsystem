@@ -31,7 +31,7 @@ public class TaskService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public Task createTask(TaskRequest taskRequest){
+    public TaskResponse createTask(TaskRequest taskRequest){
         Task task = new Task();
         task.setStatus(taskRequest.getStatus());
         task.setPriority(taskRequest.getPriority());
@@ -45,10 +45,10 @@ public class TaskService {
         }
         taskRepository.save(task);
         log.info("Task created successfully id={}", task.getId());
-        return task;
+        return toTaskResponse(task);
     }
     @PreAuthorize("hasRole('ADMIN')")
-    public Task updateTask(TaskRequest updatedTask, UUID taskId){
+    public TaskResponse updateTask(TaskRequest updatedTask, UUID taskId){
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> {
                     log.error("Task not found id={}", taskId);
@@ -73,7 +73,7 @@ public class TaskService {
         }
         taskRepository.save(task);
         log.info("Task updated successfully id={}", taskId);
-        return task;
+        return toTaskResponse(task);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -160,6 +160,7 @@ public class TaskService {
             userResponse.setId(assignedUser.getId());
             userResponse.setName(assignedUser.getName());
             userResponse.setEmail(assignedUser.getEmail());
+            userResponse.setRole(assignedUser.getRole());
         }
         taskResponse.setAssignedTo(userResponse);
         return taskResponse;

@@ -2,7 +2,6 @@ package com.taskManagementSystem.controller;
 
 import com.taskManagementSystem.dto.TaskRequest;
 import com.taskManagementSystem.dto.TaskResponse;
-import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.service.TaskService;
@@ -25,12 +24,12 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody TaskRequest task){
+    public TaskResponse createTask(@RequestBody TaskRequest task){
         return taskService.createTask(task);
     }
 
     @PutMapping("/{taskId}")
-    public Task updateTask(@RequestBody TaskRequest updatedtask, @PathVariable UUID taskId){
+    public TaskResponse updateTask(@RequestBody TaskRequest updatedtask, @PathVariable UUID taskId){
         return taskService.updateTask(updatedtask, taskId);
     }
 

@@ -1,6 +1,6 @@
 package com.taskManagementSystem.controller;
 
-import com.taskManagementSystem.entity.User;
+import com.taskManagementSystem.dto.UserResponse;
 import com.taskManagementSystem.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +24,12 @@ public class UserController {
 //    }
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<UserResponse> getUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable UUID userId) {
+    public UserResponse getUser(@PathVariable UUID userId) {
         return userService.getUserById(userId);
     }
 //Admin only
