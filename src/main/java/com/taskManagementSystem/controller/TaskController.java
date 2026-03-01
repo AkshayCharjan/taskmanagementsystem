@@ -48,7 +48,7 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}/user/{userId}")
-    public Task TaskResponse(@PathVariable UUID taskId,
+    public TaskResponse assignTask(@PathVariable UUID taskId,
                            @PathVariable UUID userId){
         return taskService.assignTask(taskId,userId);
     }
