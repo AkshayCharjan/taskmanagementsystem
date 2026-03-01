@@ -2,6 +2,7 @@ package com.taskManagementSystem.controller;
 
 import com.taskManagementSystem.dto.ProjectRequest;
 import com.taskManagementSystem.dto.ProjectResponse;
+import com.taskManagementSystem.dto.TaskResponse;
 import com.taskManagementSystem.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,13 @@ public class ProjectController {
     public ProjectResponse getProject(@PathVariable UUID projectId) {
 
         return projectService.getProject(projectId);
+    }
+
+    @GetMapping("/{projectId}/tasks")
+    public List<TaskResponse> getTasksByProject(
+            @PathVariable UUID projectId) {
+
+        return projectService.getTasksByProject(projectId);
     }
 
     @DeleteMapping("/{projectId}")

@@ -15,5 +15,7 @@ public class TaskResponse {
     private Status status;
     private Priority priority;
     private UserResponse assignedTo;
+    private UUID projectId;
+    private String projectName;
 
 }

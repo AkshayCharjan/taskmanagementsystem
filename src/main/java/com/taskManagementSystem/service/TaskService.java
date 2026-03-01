@@ -177,21 +177,31 @@ public class TaskService {
     }
 
     private TaskResponse toTaskResponse(Task task){
+
         TaskResponse taskResponse = new TaskResponse();
+
         taskResponse.setId(task.getId());
         taskResponse.setTitle(task.getTitle());
         taskResponse.setPriority(task.getPriority());
         taskResponse.setStatus(task.getStatus());
 
         User assignedUser = task.getAssignedTo();
-        UserResponse userResponse = new UserResponse();
+
         if(assignedUser != null){
+            UserResponse userResponse = new UserResponse();
             userResponse.setId(assignedUser.getId());
             userResponse.setName(assignedUser.getName());
             userResponse.setEmail(assignedUser.getEmail());
             userResponse.setRole(assignedUser.getRole());
+            taskResponse.setAssignedTo(userResponse);
         }
-        taskResponse.setAssignedTo(userResponse);
+
+        Project project = task.getProject();
+
+        if(project != null){
+            taskResponse.setProjectId(project.getId());
+            taskResponse.setProjectName(project.getName());
+        }
         return taskResponse;
     }
 }

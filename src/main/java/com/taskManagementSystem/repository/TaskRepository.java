@@ -22,4 +22,6 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     Page<Task> findByPriority(Priority priority, Pageable pageable);
 
     Page<Task> findByAssignedTo(User user, Pageable pageable);
+
+    List<Task> findByProjectId(UUID projectId);
 }
