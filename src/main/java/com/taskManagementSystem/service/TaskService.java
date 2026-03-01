@@ -13,6 +13,7 @@ import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +64,7 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
 
+    @Transactional(readOnly = true)
     public Page<TaskResponse> getFilteredTasks(Status status, Priority priority, Pageable pageable){
         Page<Task> tasks;
         if(status != null && priority != null){

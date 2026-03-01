@@ -11,6 +11,7 @@ import com.taskManagementSystem.repository.CommentRepository;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class CommentService {
         return toCommentResponse(comment);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsByTask(UUID taskId) {
 
         if (!taskRepository.existsById(taskId)) {

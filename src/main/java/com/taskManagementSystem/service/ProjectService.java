@@ -9,6 +9,7 @@ import com.taskManagementSystem.exception.ResourceNotFoundException;
 import com.taskManagementSystem.repository.ProjectRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class ProjectService {
         return toProjectResponse(project);
     }
 
+    @Transactional(readOnly = true)
     public List<ProjectResponse> getAllProjects() {
 
         return projectRepository.findAll()
@@ -48,6 +50,7 @@ public class ProjectService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ProjectResponse getProject(UUID projectId) {
 
         Project project = projectRepository.findById(projectId)
