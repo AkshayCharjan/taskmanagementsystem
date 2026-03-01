@@ -13,4 +13,5 @@ public class TaskRequest {
     private Status status;
     private Priority priority;
     private UUID assignedTo;
+    private UUID projectId;
 }

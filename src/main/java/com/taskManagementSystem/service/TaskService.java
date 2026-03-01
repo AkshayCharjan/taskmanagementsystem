@@ -3,11 +3,13 @@ package com.taskManagementSystem.service;
 import com.taskManagementSystem.dto.TaskRequest;
 import com.taskManagementSystem.dto.TaskResponse;
 import com.taskManagementSystem.dto.UserResponse;
+import com.taskManagementSystem.entity.Project;
 import com.taskManagementSystem.entity.Task;
 import com.taskManagementSystem.entity.User;
 import com.taskManagementSystem.enums.Priority;
 import com.taskManagementSystem.enums.Status;
 import com.taskManagementSystem.exception.ResourceNotFoundException;
+import com.taskManagementSystem.repository.ProjectRepository;
 import com.taskManagementSystem.repository.TaskRepository;
 import com.taskManagementSystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +26,12 @@ import java.util.UUID;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -43,6 +47,16 @@ public class TaskService {
                     });
             task.setAssignedTo(user);
         }
+
+        if(taskRequest.getProjectId() != null) {
+            Project project = projectRepository.findById(taskRequest.getProjectId())
+                    .orElseThrow(() -> {
+                        log.error("Project not found id={}", taskRequest.getProjectId());
+                        return new ResourceNotFoundException("Project not found");
+                    });
+            task.setProject(project);
+        }
+
         taskRepository.save(task);
         log.info("Task created successfully id={}", task.getId());
         return toTaskResponse(task);
@@ -71,6 +85,16 @@ public class TaskService {
                         });
             task.setAssignedTo(user);
         }
+
+        if(updatedTask.getProjectId() != null){
+            Project project = projectRepository.findById(updatedTask.getProjectId())
+                    .orElseThrow(() -> {
+                        log.error("Project not found id={}", updatedTask.getProjectId());
+                        return new ResourceNotFoundException("Project not found");
+                    });
+            task.setProject(project);
+        }
+
         taskRepository.save(task);
         log.info("Task updated successfully id={}", taskId);
         return toTaskResponse(task);
