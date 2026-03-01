@@ -31,23 +31,24 @@ public class ProjectService {
 
     public ProjectResponse createProject(ProjectRequest request) {
 
-        log.info("Creating project name={}", request.getName());
-
         if (request.getName() == null || request.getName().trim().isEmpty()) {
             log.error("Project name is required");
             throw new BadRequestException("Project name is required");
         }
 
-        User user = userRepository.findById(request.getCreatedByUserId())
-                .orElseThrow(() -> {
-                    log.error("User not found id={}", request.getCreatedByUserId());
-                    return new ResourceNotFoundException("User not found");
-                });
 
         Project project = new Project();
         project.setName(request.getName());
         project.setDescription(request.getDescription());
-        project.setCreatedBy(user);
+
+        if(request.getCreatedByUserId() != null) {
+            User user = userRepository.findById(request.getCreatedByUserId())
+                    .orElseThrow(() -> {
+                        log.error("User not found id={}", request.getCreatedByUserId());
+                        return new ResourceNotFoundException("User not found");
+                    });
+            project.setCreatedBy(user);
+        }
 
         projectRepository.save(project);
 
