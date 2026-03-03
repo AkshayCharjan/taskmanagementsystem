@@ -9,15 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JwtUtilTest {
 
     @AfterEach
-    void tearDown() {
-        // clear any static state if needed
-    }
+    void tearDown() {}
 
     @Test
     void generateAndValidateToken_extractEmail() {
         JwtUtil jwtUtil = new JwtUtil();
 
-        // set secret and expiration using ReflectionTestUtils
         ReflectionTestUtils.setField(jwtUtil, "secret", "01234567890123456789012345678901");
         ReflectionTestUtils.setField(jwtUtil, "expiration", 60_000L);
 
